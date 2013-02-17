@@ -2,6 +2,8 @@
     "name": "pwc/model-transformation",
     "type": "library",
     "description": "Model transformation PHP library.",
+    "keywords": ["transformation", "model", "conversion"],
+    "license": "MIT",
     "authors": [
         {
             "name": "Paweł A. Wacławczyk",
@@ -10,9 +12,8 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "symfony/property-access": "2.3.*"
+        "symfony/property-access": "~2.2"
     },
-    "minimum-stability": "dev",
     "autoload": {
         "psr-0": { "PWC\\ModelTransformation": "src/" }
     },
@@ -20,5 +21,6 @@
         "branch-alias": {
             "dev-master": "0.1.x-dev"
         }
-    }
+    },
+    "minimum-stability": "dev"
 }
