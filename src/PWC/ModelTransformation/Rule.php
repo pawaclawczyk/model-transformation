@@ -1,15 +1,15 @@
 <?php
 
-namespace PWC\ModelTransformation\TransformationRuleSet;
+namespace PWC\ModelTransformation;
 
-use PWC\ModelTransformation\TransformationRuleSet\TransformationRuleInterface;
-use PWC\ModelTransformation\TransformationRuleSet\TransformationRuleSetInterface;
+use PWC\ModelTransformation\RuleInterface;
+use PWC\ModelTransformation\RuleSetInterface;
 
 /**
  *
  * @author Paweł A. Wacławczyk <p.a.waclawczyk@gmail.com>
  */
-class TransformationRule implements TransformationRuleInterface
+class Rule implements RuleInterface
 {
 
     private $transformationRuleSet;
@@ -17,7 +17,7 @@ class TransformationRule implements TransformationRuleInterface
     private $filters;
     private $targetProperty;
 
-    public function __construct(TransformationRuleSetInterface $transformationRuleSet)
+    public function __construct(RuleSetInterface $transformationRuleSet)
     {
         $this->transformationRuleSet = $transformationRuleSet;
         $this->sourceProperties = array();

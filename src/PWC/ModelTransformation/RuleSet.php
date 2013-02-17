@@ -1,15 +1,15 @@
 <?php
 
-namespace PWC\ModelTransformation\TransformationRuleSet;
+namespace PWC\ModelTransformation;
 
-use PWC\ModelTransformation\TransformationRuleSet\TransformationRuleSetInterface;
-use PWC\ModelTransformation\TransformationRuleSet\TransformationRule;
+use PWC\ModelTransformation\RuleSetInterface;
+use PWC\ModelTransformation\Rule;
 
 /**
  *
  * @author Paweł A. Wacławczyk <p.a.waclawczyk@gmail.com>
  */
-class TransformationRuleSet implements TransformationRuleSetInterface, \Iterator
+class RuleSet implements RuleSetInterface, \Iterator
 {
 
     private $rules;
@@ -19,7 +19,7 @@ class TransformationRuleSet implements TransformationRuleSetInterface, \Iterator
     {
         $this->rules = array();
         if (null !== $transformationRuleArray) {
-            $this->parseTransformationRuleArray($transformationRuleArray);
+            $this->parseRuleArray($transformationRuleArray);
         }
     }
 
@@ -28,7 +28,7 @@ class TransformationRuleSet implements TransformationRuleSetInterface, \Iterator
      */
     public function addRule()
     {
-        $rule = new TransformationRule($this);
+        $rule = new Rule($this);
         $this->rules[] = $rule;
 
         return $rule;
@@ -73,7 +73,7 @@ class TransformationRuleSet implements TransformationRuleSetInterface, \Iterator
         return isset($this->rules[$this->_index]);
     }
 
-    private function parseTransformationRuleArray($transformationRuleArray)
+    private function parseRuleArray($transformationRuleArray)
     {
         foreach ($transformationRuleArray as $sourceProperty => $targetProperty) {
             $this->addRule()->addSourceProperty($sourceProperty)->setTargetProperty($targetProperty);

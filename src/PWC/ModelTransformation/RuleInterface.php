@@ -1,12 +1,12 @@
 <?php
 
-namespace PWC\ModelTransformation\TransformationRuleSet;
+namespace PWC\ModelTransformation;
 
 /**
  *
  * @author Paweł A. Wacławczyk <p.a.waclawczyk@gmail.com>
  */
-interface TransformationRuleInterface
+interface RuleInterface
 {
 
     public function addSourceProperty($property);

@@ -3,8 +3,8 @@
 namespace PWC\ModelTransformation;
 
 use PWC\ModelTransformation\TransformerInterface;
-use PWC\ModelTransformation\TransformationRuleSet\TransformationRuleInterface;
-use PWC\ModelTransformation\TransformationRuleSet\TransformationRuleSet;
+use PWC\ModelTransformation\RuleInterface;
+use PWC\ModelTransformation\RuleSet;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 
@@ -32,7 +32,7 @@ class Transformer implements TransformerInterface
         }
 
         if (is_array($transformationRuleSet)) {
-            $transformationRuleSet = new TransformationRuleSet($transformationRuleSet);
+            $transformationRuleSet = new RuleSet($transformationRuleSet);
         }
 
         foreach ($transformationRuleSet as $transformationRule) {
@@ -52,14 +52,14 @@ class Transformer implements TransformerInterface
         return $target;
     }
 
-    private function transformSingleRule($source, $target, TransformationRuleInterface $transformationRule)
+    private function transformSingleRule($source, $target, RuleInterface $transformationRule)
     {
         $sourceValue = $this->getSourceValue($source, $transformationRule);
         $filteredValue = $this->filter($sourceValue, $target, $transformationRule);
         $this->setTargetValue($filteredValue, $target, $transformationRule);
     }
 
-    private function getSourceValue($source, TransformationRuleInterface $transformationRule)
+    private function getSourceValue($source, RuleInterface $transformationRule)
     {
         $extractFromArray = (1 === count($transformationRule->getSourceProperties()));
         $sourceValue = array();
@@ -75,7 +75,7 @@ class Transformer implements TransformerInterface
         return $sourceValue;
     }
 
-    private function filter($sourceValue, $target, TransformationRuleInterface $transformationRule)
+    private function filter($sourceValue, $target, RuleInterface $transformationRule)
     {
         $targetValue = $this->propertyAccessor->getValue($target, $transformationRule->getTargetProperty());
         $value = $sourceValue;
@@ -90,7 +90,7 @@ class Transformer implements TransformerInterface
         return $value;
     }
 
-    private function setTargetValue($value, $target, TransformationRuleInterface $transformationRule)
+    private function setTargetValue($value, $target, RuleInterface $transformationRule)
     {
         $this->propertyAccessor->setValue($target, $transformationRule->getTargetProperty(), $value);
     }

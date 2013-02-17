@@ -1,14 +1,14 @@
 <?php
 
-namespace PWC\ModelTransformation\Tests\TranasformationRuleSet;
+namespace PWC\ModelTransformation\Tests;
 
-use PWC\ModelTransformation\TransformationRuleSet\TransformationRuleSet;
+use PWC\ModelTransformation\RuleSet;
 
 /**
  *
  * @author Paweł A. Wacławczyk <p.a.waclawczyk@gmail.com>
  */
-class TransformationRuleSetTest extends \PHPUnit_Framework_TestCase
+class RuleSetTest extends \PHPUnit_Framework_TestCase
 {
 
     private $transformationRuleSet;
@@ -16,10 +16,10 @@ class TransformationRuleSetTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->transformationRuleSet = new TransformationRuleSet();
+        $this->transformationRuleSet = new RuleSet();
     }
 
-    public function testBuildingTransformationRuleSet()
+    public function testBuildingRuleSet()
     {
         $this->transformationRuleSet
                 ->addRule()
@@ -55,14 +55,14 @@ class TransformationRuleSetTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('target.other.rule', $transformationRule->getTargetProperty());
     }
 
-    public function testBuildingTransformationRuleSetFromTransformationRuleArray()
+    public function testBuildingRuleSetFromRuleArray()
     {
         $transformationRuleArray = array(
             'first.property' => 'first',
             'second.property' => 'second',
         );
 
-        $transformationRuleSet = new TransformationRuleSet($transformationRuleArray);
+        $transformationRuleSet = new RuleSet($transformationRuleArray);
 
         $transformationRuleSet->rewind();
         $transformationRule = $transformationRuleSet->current();
@@ -81,7 +81,7 @@ class TransformationRuleSetTest extends \PHPUnit_Framework_TestCase
 
     public function testFindingRuleByProperty()
     {
-        $transformationRuleSet = new TransformationRuleSet();
+        $transformationRuleSet = new RuleSet();
         $transformationRuleSet
                 ->addRule()->addSourceProperty('propertyA')->setTargetProperty('targetA')
                 ->addRule()->setSourceProperties(array('propertyB', 'propertyC'))->setTargetProperty('targetB');
