@@ -11,8 +11,6 @@ interface ModelDefinitionInterface
 
     /**
      * Assert that current model node is instance of class or type.
-     * If given type is array or class implements Traversable, automaticly
-     * assert that node is a collection.
      * By default node is instance of stdClass.
      *
      * @param string $fqcnOrType FQCN or type name
