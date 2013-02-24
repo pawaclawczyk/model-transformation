@@ -42,5 +42,26 @@ interface ModelDefinitionInterface
      *
      * @return ModelDefinitionInterface Parent node.
      */
-    public function parent();
+    public function getParent();
+
+    /**
+     * Fetch value(s) from instance of model from given path.
+     *
+     * @param mixed  $model Instance of model.
+     * @param string $path  Path to the value(s).
+     *
+     * @return mixed
+     */
+    public function getValue($model, $path);
+
+    /**
+     * Put value(s) to instance of model into given path.
+     *
+     * @param mixed  $model Instance of model.
+     * @param string $path  Path to the value(s).
+     * @param mixed  $value Value(s) to set.
+     *
+     * @return ModelDefinitionInterface
+     */
+    public function setValue($model, $path, $value);
 }
