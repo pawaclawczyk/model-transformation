@@ -218,6 +218,50 @@ class TransformerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(15, $targetObject->targetPublicProperty);
     }
 
+    public function testObjectToObjectTransformationWithGlobalRegisteredFilter()
+    {
+        $source = new SourceClass(5);
+        $target = new TargetClass();
+
+        $ruleSet = new RuleSet();
+        $ruleSet->registerFilter('double', function ($target, $source) { return 2 * $source; });
+        $ruleSet->addRule('sourcePublicProperty', 'targetPublicProperty', 'double');
+
+        $targetObject = $this->transformer->transform($source, $target, $ruleSet);
+
+        $this->assertEquals(10, $targetObject->targetPublicProperty);
+    }
+
+    public function testObjectToObjectTransformationWithGlobalPrependFilter()
+    {
+        $source = new SourceClass(5);
+        $target = new TargetClass();
+
+        $ruleSet = new RuleSet();
+        $ruleSet->addFilter(function ($target, $source) { return 2 * $source; }, true);
+
+        $ruleSet->addRule('sourcePublicProperty', 'targetPublicProperty', function ($target, $source) { return $source + 2; });
+
+        $targetObject = $this->transformer->transform($source, $target, $ruleSet);
+
+        $this->assertEquals(12, $targetObject->targetPublicProperty);
+    }
+
+    public function testObjectToObjectTransformationWithGlobalAppendFilter()
+    {
+        $source = new SourceClass(5);
+        $target = new TargetClass();
+
+        $ruleSet = new RuleSet();
+        $ruleSet->addFilter(function ($target, $source) { return 2 * $source; });
+
+        $ruleSet->addRule('sourcePublicProperty', 'targetPublicProperty', function ($target, $source) { return $source + 2; });
+
+        $targetObject = $this->transformer->transform($source, $target, $ruleSet);
+
+        $this->assertEquals(14, $targetObject->targetPublicProperty);
+    }
+
 }
 
 class SourceClass
