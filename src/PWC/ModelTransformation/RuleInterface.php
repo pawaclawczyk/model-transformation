@@ -3,27 +3,26 @@
 namespace PWC\ModelTransformation;
 
 /**
+ * Rule of transformation.
+ * Contains source and target paths, and optional filter to apply.
  *
  * @author Paweł A. Wacławczyk <p.a.waclawczyk@gmail.com>
  */
 interface RuleInterface
 {
 
-    public function addSourceProperty($property);
+    /**
+     * @return array Source paths.
+     */
+    public function getSourcePaths();
 
-    public function setSourceProperties(array $properties);
+    /**
+     * @return array Target path.
+     */
+    public function getTargetPath();
 
-    public function getSourceProperties();
-
-    public function addFilter($callback);
-
-    public function setFilters(array $filters);
-
+    /**
+     * @return array Filter to apply on source data.
+     */
     public function getFilters();
-
-    public function setTargetProperty($property);
-
-    public function getTargetProperty();
-
-    public function addRule();
 }

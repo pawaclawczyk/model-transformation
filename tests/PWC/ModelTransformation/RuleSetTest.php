@@ -13,46 +13,45 @@ class RuleSetTest extends \PHPUnit_Framework_TestCase
 
     private $transformationRuleSet;
 
-    public function setUp()
+    protected function setUp()
     {
-        parent::setUp();
         $this->transformationRuleSet = new RuleSet();
+    }
+
+    protected function tearDown()
+    {
+        $this->transformationRuleSet = null;
     }
 
     public function testBuildingRuleSet()
     {
         $this->transformationRuleSet
-                ->addRule()
-                ->setSourceProperties(array('source.property', 'source.another.property'))
-                ->setFilters(array(function () {
+                ->addRule(array('source.property', 'source.another.property'), 'target.property', array(function () {
                         return 1;
-                    }))->addFilter(function () {
-                            return 2;
-                        })
-                ->setTargetProperty('target.property')
-                ->addRule()
-                ->addSourceProperty('source.other.rule')
-                ->setTargetProperty('target.other.rule');
+                    }, function () {
+                        return 2;
+                    }))
+                ->addRule('source.other.rule', 'target.other.rule');
 
         $this->assertInstanceOf('\Iterator', $this->transformationRuleSet);
 
         $this->transformationRuleSet->rewind();
         $transformationRule = $this->transformationRuleSet->current();
 
-        $this->assertEquals(array('source.property', 'source.another.property'), $transformationRule->getSourceProperties());
+        $this->assertEquals(array('source.property', 'source.another.property'), $transformationRule->getSourcePaths());
         $this->assertEquals(array(function () {
                 return 1;
             }, function () {
                 return 2;
             }), $transformationRule->getFilters());
-        $this->assertEquals('target.property', $transformationRule->getTargetProperty());
+        $this->assertEquals('target.property', $transformationRule->getTargetPath());
 
         $this->transformationRuleSet->next();
         $transformationRule = $this->transformationRuleSet->current();
 
-        $this->assertEquals(array('source.other.rule'), $transformationRule->getSourceProperties());
+        $this->assertEquals(array('source.other.rule'), $transformationRule->getSourcePaths());
         $this->assertEquals(array(), $transformationRule->getFilters());
-        $this->assertEquals('target.other.rule', $transformationRule->getTargetProperty());
+        $this->assertEquals('target.other.rule', $transformationRule->getTargetPath());
     }
 
     public function testBuildingRuleSetFromRuleArray()
@@ -67,24 +66,24 @@ class RuleSetTest extends \PHPUnit_Framework_TestCase
         $transformationRuleSet->rewind();
         $transformationRule = $transformationRuleSet->current();
 
-        $this->assertEquals(array('first.property'), $transformationRule->getSourceProperties());
+        $this->assertEquals(array('first.property'), $transformationRule->getSourcePaths());
         $this->assertEquals(array(), $transformationRule->getFilters());
-        $this->assertEquals('first', $transformationRule->getTargetProperty());
+        $this->assertEquals('first', $transformationRule->getTargetPath());
 
         $transformationRuleSet->next();
         $transformationRule = $transformationRuleSet->current();
 
-        $this->assertEquals(array('second.property'), $transformationRule->getSourceProperties());
+        $this->assertEquals(array('second.property'), $transformationRule->getSourcePaths());
         $this->assertEquals(array(), $transformationRule->getFilters());
-        $this->assertEquals('second', $transformationRule->getTargetProperty());
+        $this->assertEquals('second', $transformationRule->getTargetPath());
     }
 
     public function testFindingRuleByProperty()
     {
         $transformationRuleSet = new RuleSet();
         $transformationRuleSet
-                ->addRule()->addSourceProperty('propertyA')->setTargetProperty('targetA')
-                ->addRule()->setSourceProperties(array('propertyB', 'propertyC'))->setTargetProperty('targetB');
+                ->addRule('propertyA', 'targetA')
+                ->addRule(array('propertyB', 'propertyC'), 'targetB');
 
         $transformationRuleSet->rewind();
         $transformationRule = $transformationRuleSet->current();
@@ -96,6 +95,24 @@ class RuleSetTest extends \PHPUnit_Framework_TestCase
         $transformationRule = $transformationRuleSet->current();
 
         $this->assertEquals($transformationRule, $transformationRuleSet->findRule('propertyB'));
+
+        $this->assertNull($transformationRuleSet->findRule('NotExistingDataPath'));
+    }
+
+    public function testIteratorMethods()
+    {
+        $transformationRuleSet = new RuleSet();
+        $transformationRuleSet
+                ->addRule('propertyA', 'targetA')
+                ->addRule('propertyB', 'targetB');
+
+        $index = 0;
+        foreach ($transformationRuleSet as $key => $rule) {
+            $this->assertEquals($index, $key);
+            $this->assertInstanceOf('PWC\ModelTransformation\RuleInterface', $rule);
+
+            $index++;
+        }
     }
 
 }

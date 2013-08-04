@@ -61,10 +61,10 @@ class Transformer implements TransformerInterface
 
     private function getSourceValue($source, RuleInterface $transformationRule)
     {
-        $extractFromArray = (1 === count($transformationRule->getSourceProperties()));
+        $extractFromArray = (1 === count($transformationRule->getSourcePaths()));
         $sourceValue = array();
 
-        foreach ($transformationRule->getSourceProperties() as $sourceProperty) {
+        foreach ($transformationRule->getSourcePaths() as $sourceProperty) {
             $sourceValue[] = $this->propertyAccessor->getValue($source, $sourceProperty);
         }
 
@@ -77,7 +77,7 @@ class Transformer implements TransformerInterface
 
     private function filter($sourceValue, $target, RuleInterface $transformationRule)
     {
-        $targetValue = $this->propertyAccessor->getValue($target, $transformationRule->getTargetProperty());
+        $targetValue = $this->propertyAccessor->getValue($target, $transformationRule->getTargetPath());
         $value = $sourceValue;
 
         foreach ($transformationRule->getFilters() as $filter) {
@@ -92,7 +92,7 @@ class Transformer implements TransformerInterface
 
     private function setTargetValue($value, $target, RuleInterface $transformationRule)
     {
-        $this->propertyAccessor->setValue($target, $transformationRule->getTargetProperty(), $value);
+        $this->propertyAccessor->setValue($target, $transformationRule->getTargetPath(), $value);
     }
 
     private function createTargetInstance($class)

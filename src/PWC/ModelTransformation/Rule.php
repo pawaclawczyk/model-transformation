@@ -3,107 +3,48 @@
 namespace PWC\ModelTransformation;
 
 use PWC\ModelTransformation\RuleInterface;
-use PWC\ModelTransformation\RuleSetInterface;
 
 /**
+ * {@inheritdoc}
  *
  * @author Paweł A. Wacławczyk <p.a.waclawczyk@gmail.com>
  */
 class Rule implements RuleInterface
 {
 
-    private $transformationRuleSet;
-    private $sourceProperties;
-    private $filters;
+    private $sourcePaths;
     private $targetProperty;
+    private $filters;
 
-    public function __construct(RuleSetInterface $transformationRuleSet)
+    public function __construct($sourcePaths, $targetPath, $filters = array())
     {
-        $this->transformationRuleSet = $transformationRuleSet;
-        $this->sourceProperties = array();
-        $this->filters = array();
+        $this->sourcePaths = (array) $sourcePaths;
+        $this->targetProperty = $targetPath;
+        $this->filters = (array) $filters;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function addSourceProperty($property)
+    public function getSourcePaths()
     {
-        $this->sourceProperties[] = $property;
-
-        return $this;
+        return $this->sourcePaths;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function setSourceProperties(array $properties)
-    {
-        $this->sourceProperties = $properties;
-
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getSourceProperties()
-    {
-        return $this->sourceProperties;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function addFilter($callback)
-    {
-        $this->filters[] = $callback;
-
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setFilters(array $filters)
-    {
-        $this->filters = $filters;
-
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getFilters()
-    {
-        return $this->filters;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setTargetProperty($property)
-    {
-        $this->targetProperty = $property;
-
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getTargetProperty()
+    public function getTargetPath()
     {
         return $this->targetProperty;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function addRule()
+    public function getFilters()
     {
-        return $this->transformationRuleSet->addRule();
+        return $this->filters;
     }
 
 }

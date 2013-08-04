@@ -10,7 +10,23 @@ namespace PWC\ModelTransformation;
 interface RuleSetInterface
 {
 
-    public function addRule();
+    /**
+     * Add new transformation rule.
+     *
+     * @param string|array          $sourcePaths
+     * @param string                $targetPath
+     * @param string|callback|array $filters
+     *
+     * @return RuleSetInterface
+     */
+    public function addRule($sourcePaths, $targetPath, $filters = array());
 
-    public function findRule($property);
+    /**
+     * Find transformation rule for source or target path.
+     *
+     * @param string $property Source or target path
+     *
+     * @return RuleInterface
+     */
+    public function findRule($path);
 }

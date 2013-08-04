@@ -151,9 +151,9 @@ class TransformerTest extends \PHPUnit_Framework_TestCase
         $targetClass = 'PWC\ModelTransformation\Tests\TargetClass';
         $transformationRuleArray = new RuleSet();
         $transformationRuleArray
-                ->addRule()->addSourceProperty('sourcePublicProperty')->setTargetProperty('targetPublicProperty')
-                ->addRule()->addSourceProperty('sourcePrivateProperty')->setTargetProperty('targetPrivateProperty')
-                ->addRule()->addSourceProperty('sourceObjectProperty.property')->setTargetProperty('targetObjectProperty.property');
+                ->addRule('sourcePublicProperty', 'targetPublicProperty')
+                ->addRule('sourcePrivateProperty', 'targetPrivateProperty')
+                ->addRule('sourceObjectProperty.property', 'targetObjectProperty.property');
 
         $targetObject = $this->transformer->transform($sourceObject, $targetClass, $transformationRuleArray);
 
@@ -168,13 +168,12 @@ class TransformerTest extends \PHPUnit_Framework_TestCase
         $sourceObject = new SourceClass('John', 'Smith');
         $targetClass = 'PWC\ModelTransformation\Tests\TargetClass';
 
+        $filter = function ($targetPropertyValue, $name, $surname) {
+                    return sprintf('%s %s', $name, $surname);
+                };
+
         $transformationRuleArray = new RuleSet();
-        $transformationRuleArray->addRule()
-                ->setSourceProperties(array('sourcePublicProperty', 'sourcePrivateProperty'))
-                ->addFilter(function ($targetPropertyValue, $name, $surname) {
-                            return sprintf('%s %s', $name, $surname);
-                        })
-                ->setTargetProperty('targetPublicProperty');
+        $transformationRuleArray->addRule(array('sourcePublicProperty', 'sourcePrivateProperty'), 'targetPublicProperty', $filter);
 
         $targetObject = $this->transformer->transform($sourceObject, $targetClass, $transformationRuleArray);
 
@@ -187,13 +186,12 @@ class TransformerTest extends \PHPUnit_Framework_TestCase
         $targetObject = new TargetClass();
         $targetObject->setTargetPrivateProperty(5);
 
+        $filter = function ($targetPropertyValue, $sourcePropertyValue) {
+                    return $targetPropertyValue + $sourcePropertyValue;
+                };
+
         $transformationRuleArray = new RuleSet();
-        $transformationRuleArray->addRule()
-                ->addSourceProperty('sourcePublicProperty')
-                ->addFilter(function ($targetPropertyValue, $sourcePropertyValue) {
-                            return $targetPropertyValue + $sourcePropertyValue;
-                        })
-                ->setTargetProperty('targetPrivateProperty');
+        $transformationRuleArray->addRule('sourcePublicProperty', 'targetPrivateProperty', $filter);
 
         $targetObject = $this->transformer->transform($sourceObject, $targetObject, $transformationRuleArray);
 
@@ -208,13 +206,12 @@ class TransformerTest extends \PHPUnit_Framework_TestCase
         $sourceObject = new SourceClass(5);
         $targetClass = 'PWC\ModelTransformation\Tests\TargetClass';
 
-        $transformationRuleArray = new RuleSet();
-        $transformationRuleArray->addRule()
-                ->addSourceProperty('sourcePublicProperty')
-                ->addFilter(function ($targetPropertyValue, $sourcePropertyValue) use ($service) {
+        $filter = function ($targetPropertyValue, $sourcePropertyValue) use ($service) {
                             return $sourcePropertyValue + $service->get();
-                        })
-                ->setTargetProperty('targetPublicProperty');
+                        };
+
+        $transformationRuleArray = new RuleSet();
+        $transformationRuleArray->addRule('sourcePublicProperty', 'targetPublicProperty', $filter);
 
         $targetObject = $this->transformer->transform($sourceObject, $targetClass, $transformationRuleArray);
 

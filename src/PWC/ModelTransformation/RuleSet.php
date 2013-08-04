@@ -6,6 +6,7 @@ use PWC\ModelTransformation\RuleSetInterface;
 use PWC\ModelTransformation\Rule;
 
 /**
+ * {@inheritdoc}
  *
  * @author Paweł A. Wacławczyk <p.a.waclawczyk@gmail.com>
  */
@@ -15,32 +16,35 @@ class RuleSet implements RuleSetInterface, \Iterator
     private $rules;
     private $_index;
 
-    public function __construct($transformationRuleArray = null)
+    /**
+     * @param array $transformationMap Primitive set of rules, given as associative array.
+     */
+    public function __construct($transformationMap = null)
     {
         $this->rules = array();
-        if (null !== $transformationRuleArray) {
-            $this->parseRuleArray($transformationRuleArray);
+        if (null !== $transformationMap) {
+            $this->parseRuleArray($transformationMap);
         }
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function addRule()
+    public function addRule($sourcePaths, $targetPath, $filters = array())
     {
-        $rule = new Rule($this);
+        $rule = new Rule($sourcePaths, $targetPath, $filters);
         $this->rules[] = $rule;
 
-        return $rule;
+        return $this;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function findRule($property)
+    public function findRule($path)
     {
         foreach ($this->rules as $rule) {
-            if (in_array($property, $rule->getSourceProperties()) || $property === $rule->getTargetProperty()) {
+            if (in_array($path, $rule->getSourcePaths()) || $path === $rule->getTargetPath()) {
                 return $rule;
             }
         }
@@ -48,35 +52,50 @@ class RuleSet implements RuleSetInterface, \Iterator
         return null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function current()
     {
         return $this->rules[$this->_index];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function key()
     {
         return $this->_index;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function next()
     {
         $this->_index++;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function rewind()
     {
         $this->_index = 0;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function valid()
     {
         return isset($this->rules[$this->_index]);
     }
 
-    private function parseRuleArray($transformationRuleArray)
+    private function parseRuleArray($transformationMap)
     {
-        foreach ($transformationRuleArray as $sourceProperty => $targetProperty) {
-            $this->addRule()->addSourceProperty($sourceProperty)->setTargetProperty($targetProperty);
+        foreach ($transformationMap as $sourcePath => $targetPath) {
+            $this->addRule($sourcePath, $targetPath);
         }
     }
 
