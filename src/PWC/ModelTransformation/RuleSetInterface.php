@@ -11,6 +11,22 @@ interface RuleSetInterface
 {
 
     /**
+     * Add global registered filter, so it can be used in every rule by alias.
+     *
+     * @param string   $alias
+     * @param callback $callback
+     */
+    public function registerFilter($alias, $callback);
+
+    /**
+     * Add filter applied to every rule in set.
+     *
+     * @param callback $callback
+     * @param boolean  $prepend
+     */
+    public function addFilter($callback, $prepend = false);
+
+    /**
      * Add new transformation rule.
      *
      * @param string|array          $sourcePaths

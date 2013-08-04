@@ -115,4 +115,83 @@ class RuleSetTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testUsingGlobalRegisteredFilter()
+    {
+        $alias = 'return_one';
+        $filter = function () {
+                    return 1;
+                };
+
+        $this->transformationRuleSet->registerFilter($alias, $filter);
+        $this->transformationRuleSet->addRule('sourcePath', 'targetPath', 'return_one');
+
+        $ruleFilters = $this->transformationRuleSet->findRule('sourcePath')->getFilters();
+        $this->assertEquals($filter, $ruleFilters[0]);
+    }
+
+    public function testUsingGlobalRegisteredFilterCombinedWithInlineDefinedFilter()
+    {
+        $alias = 'return_one';
+        $filter = function () {
+                    return 1;
+                };
+
+        $this->transformationRuleSet->registerFilter($alias, $filter);
+
+        $otherFilter = function () {
+                    return 2;
+                };
+        $this->transformationRuleSet->addRule('sourcePath', 'targetPath', array($filter, 'return_one'));
+        $ruleFilters = $this->transformationRuleSet->findRule('sourcePath')->getFilters();
+        $this->assertEquals($otherFilter, $ruleFilters[0]);
+        $this->assertEquals($filter, $ruleFilters[1]);
+    }
+
+    public function testAddingFilterForAllRules()
+    {
+        $filterAppend = function () {
+                    return 1;
+                };
+
+        $filterPrepend = function () {
+                    return 2;
+                };
+
+        $otherFilter = function () {
+                    return 3;
+                };
+
+        $this->transformationRuleSet->addFilter($filterPrepend, true);
+        $this->transformationRuleSet->addFilter($filterAppend);
+
+        $this->transformationRuleSet->addRule('sourcePath', 'targetPath', $otherFilter);
+        $this->transformationRuleSet->addRule('otherSourcePath', 'otherTargetPath');
+
+        $ruleFilters = $this->transformationRuleSet->findRule('sourcePath')->getFilters();
+        $this->assertEquals($filterPrepend, $ruleFilters[0]);
+        $this->assertEquals($otherFilter, $ruleFilters[1]);
+        $this->assertEquals($filterAppend, $ruleFilters[2]);
+
+        $ruleFilters = $this->transformationRuleSet->findRule('otherSourcePath')->getFilters();
+        $this->assertEquals($filterPrepend, $ruleFilters[0]);
+        $this->assertEquals($filterAppend, $ruleFilters[1]);
+    }
+
+    public function testAddingGlobalRegisteredFilterForAllRules()
+    {
+        $filter = function () {
+                    return 1;
+                };
+        $alias = 'filter_one';
+
+        $this->transformationRuleSet->registerFilter($alias, $filter);
+        $this->transformationRuleSet->addFilter($alias);
+
+        $this->transformationRuleSet->addRule('sourcePath', 'targetPath');
+
+        $ruleFilters = $this->transformationRuleSet->findRule('sourcePath')->getFilters();
+
+        $this->assertEquals($filter, $ruleFilters[0]);
+    }
+
 }
