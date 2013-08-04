@@ -1,5 +1,9 @@
 ### CHANGELOG ###
 
+##### v0.2.1 (2013-08-04) #####
+- Adding registration of alias for filter, available in rule definition.
+- Adding filters prepended or appended for every rule.
+
 ##### v0.2.0 (2013-08-04) #####
 - [BCB] Remove or modified methods:
     - `Rule::addSourceProperty` - removed
