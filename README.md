@@ -6,3 +6,7 @@ model-transformation
 ====================
 
 PHP library for model transformation.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/pawaclawczyk/model-transformation/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
